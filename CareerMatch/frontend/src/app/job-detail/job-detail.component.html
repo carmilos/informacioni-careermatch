@@ -1,0 +1,17 @@
+<div *ngIf="job" class="card">
+  <h2>{{job.title}}</h2>
+  <div>{{job.company}} — {{job.location}}</div>
+  <p>{{job.description}}</p>
+
+  <h3>Apply</h3>
+  <div>
+    <input placeholder="Your name" [(ngModel)]="name" />
+  </div>
+  <div>
+    <input placeholder="Your email" [(ngModel)]="email" />
+  </div>
+  <div>
+    <input type="file" (change)="onFile($event)" />
+  </div>
+  <div style="margin-top:8px;"><button class="button" (click)="apply()">Send application</button></div>
+</div>

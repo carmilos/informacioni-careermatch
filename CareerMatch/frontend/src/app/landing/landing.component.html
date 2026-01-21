@@ -1,0 +1,42 @@
+<h1>CareerMatch — Job Openings</h1>
+
+<div style="display:flex; gap:12px; align-items:center; margin-bottom:12px;">
+  <div *ngIf="!auth.user" style="display:flex; gap:8px;">
+    <input placeholder="Email" [(ngModel)]="loginEmail" />
+    <input placeholder="Password" type="password" [(ngModel)]="loginPassword" />
+    <button class="button" (click)="doLogin()">Login</button>
+  </div>
+  <div *ngIf="!auth.user" style="display:flex; gap:8px;">
+    <input placeholder="Register email" [(ngModel)]="registerEmail" />
+    <input placeholder="Password" type="password" [(ngModel)]="registerPassword" />
+    <button class="button" (click)="doRegister()">Register HR</button>
+  </div>
+  <div *ngIf="auth.user">
+    <button class="button" *ngIf="auth.isHR()" (click)="toggleCreate()">Create Job (HR)</button>
+    <button class="button" (click)="auth.logout(); load();">Logout</button>
+  </div>
+  <div class="muted">Log in as HR to post; guests may apply</div>
+</div>
+
+<div *ngIf="showCreate" class="card">
+  <h3>Create Job</h3>
+  <div>
+    <input placeholder="Title" [(ngModel)]="newJob.title" />
+  </div>
+  <div>
+    <input placeholder="Company" [(ngModel)]="newJob.company" />
+  </div>
+  <div>
+    <input placeholder="Location" [(ngModel)]="newJob.location" />
+  </div>
+  <div>
+    <textarea placeholder="Description" [(ngModel)]="newJob.description"></textarea>
+  </div>
+  <div style="margin-top:8px;"><button class="button" (click)="create()">Post</button></div>
+</div>
+
+<div *ngFor="let job of jobs" class="card">
+  <h3><a [routerLink]="['/jobs', job.id]">{{job.title}}</a></h3>
+  <div>{{job.company}} — {{job.location}}</div>
+  <div class="muted">Posted by #{{job.owner_id}}</div>
+</div>

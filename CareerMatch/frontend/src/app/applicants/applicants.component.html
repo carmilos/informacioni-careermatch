@@ -1,0 +1,5 @@
+<h2>Applicants</h2>
+<div *ngFor="let a of applicants" class="card">
+  <div><strong>{{a.name}}</strong> — {{a.email}}</div>
+  <div><a [href]="a.cv_path" target="_blank">Download CV</a></div>
+</div>
