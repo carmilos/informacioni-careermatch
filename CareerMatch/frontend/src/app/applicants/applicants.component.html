@@ -1,5 +1,14 @@
-<h2>Applicants</h2>
+<div class="card">
+  <h2>Applicants</h2>
+  <div class="muted">List of candidates who applied to this job</div>
+</div>
+
 <div *ngFor="let a of applicants" class="card">
-  <div><strong>{{a.name}}</strong> — {{a.email}}</div>
-  <div><a [href]="a.cv_path" target="_blank">Download CV</a></div>
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <div>
+      <div><strong>{{a.name}}</strong></div>
+      <div class="muted">{{a.email}}</div>
+    </div>
+    <div><a class="button ghost" [href]="a.cv_path" target="_blank">Download CV</a></div>
+  </div>
 </div>
