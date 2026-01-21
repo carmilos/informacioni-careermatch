@@ -21,6 +21,10 @@ export class JobDetailComponent {
 
   onFile(e: any) { this.cv = e.target.files[0]; }
 
+  canSeeApplicants() {
+    return this.auth.isHR() && this.job && this.auth.user && this.job.owner_id === this.auth.user.id;
+  }
+
   apply() {
     if (!this.job || !this.cv) return alert('Provide name, email and CV');
     const fd = new FormData();

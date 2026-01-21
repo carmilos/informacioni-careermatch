@@ -4,7 +4,7 @@
       <h2 style="margin:0">{{job.title}}</h2>
       <div class="job-meta">{{job.company}} — {{job.location}}</div>
     </div>
-    <div *ngIf="auth.isHR()" class="actions">
+    <div *ngIf="canSeeApplicants()" class="actions">
       <button class="button ghost" [routerLink]="['/jobs', job.id, 'applicants']">View applicants</button>
     </div>
   </div>
