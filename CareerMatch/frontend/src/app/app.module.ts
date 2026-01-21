@@ -8,6 +8,7 @@ import { LandingComponent } from './landing/landing.component';
 import { JobDetailComponent } from './job-detail/job-detail.component';
 import { ApplicantsComponent } from './applicants/applicants.component';
 import { routes } from './app.routes';
+import { AuthService } from './services/auth.service';
 
 @NgModule({
   declarations: [AppComponent, LandingComponent, JobDetailComponent, ApplicantsComponent],

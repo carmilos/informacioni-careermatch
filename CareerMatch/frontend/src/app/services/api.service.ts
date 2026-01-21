@@ -14,6 +14,13 @@ export class ApiService {
     return token ? { headers: new HttpHeaders({ Authorization: `Bearer ${token}` }) } : {};
   }
 
+  // Generic GET helper. `path` may be absolute or relative to API base.
+  get<T = any>(path: string, includeAuth = true) {
+    const url = path.startsWith('http') ? path : `${this.api}${path.startsWith('/') ? path : '/' + path}`;
+    const opts = includeAuth ? this.authHeaders() : {};
+    return this.http.get<T>(url, opts);
+  }
+
   listJobs(): Observable<Job[]> { return this.http.get<Job[]>(`${this.api}/jobs`); }
   getJob(id: number): Observable<Job> { return this.http.get<Job>(`${this.api}/jobs/${id}`); }
   createJob(data: any): Observable<Job> { return this.http.post<Job>(`${this.api}/jobs`, data, this.authHeaders()); }

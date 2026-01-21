@@ -21,7 +21,7 @@ export class AuthService {
   }
 
   fetchMe() {
-    return this.api.http.get(`${this.api.api}/auth/me`, { headers: this.api['authHeaders']().headers }).toPromise().then((u: any) => { this.user = u; return u; });
+    return this.api.get('/auth/me').toPromise().then((u: any) => { this.user = u; return u; });
   }
 
   logout() {
