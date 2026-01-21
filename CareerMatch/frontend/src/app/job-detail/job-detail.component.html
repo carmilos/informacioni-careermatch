@@ -13,5 +13,8 @@
   <div>
     <input type="file" (change)="onFile($event)" />
   </div>
-  <div style="margin-top:8px;"><button class="button" (click)="apply()">Send application</button></div>
+  <div style="margin-top:8px;">
+    <button class="button" (click)="apply()">Send application</button>
+    <button *ngIf="auth.isHR()" class="button" style="margin-left:8px;" [routerLink]="['/jobs', job.id, 'applicants']">View applicants</button>
+  </div>
 </div>

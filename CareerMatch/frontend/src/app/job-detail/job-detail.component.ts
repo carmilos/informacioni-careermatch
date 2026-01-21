@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../services/api.service';
+import { AuthService } from '../services/auth.service';
 import { Job } from '../models';
 
 @Component({
@@ -13,7 +14,7 @@ export class JobDetailComponent {
   email = '';
   cv: File | null = null;
 
-  constructor(private route: ActivatedRoute, private api: ApiService) {
+  constructor(private route: ActivatedRoute, private api: ApiService, public auth: AuthService) {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.api.getJob(id).subscribe(j => this.job = j);
   }
