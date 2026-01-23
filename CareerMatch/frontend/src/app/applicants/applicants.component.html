@@ -9,6 +9,9 @@
       <div><strong>{{a.name}}</strong></div>
       <div class="muted">{{a.email}}</div>
     </div>
-    <div><a class="button ghost" [href]="a.cv_path" target="_blank">Download CV</a></div>
+    <div>
+      <a *ngIf="a.cv_path" class="modal-file-btn no-underline" [href]="a.cv_path" target="_blank">Download CV</a>
+      <span *ngIf="!a.cv_path" class="muted">No CV uploaded</span>
+    </div>
   </div>
 </div>

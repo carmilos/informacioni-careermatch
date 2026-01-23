@@ -1,5 +1,5 @@
 import os
-from fastapi import FastAPI, Depends, HTTPException, UploadFile, File, Form
+from fastapi import FastAPI, Depends, HTTPException, UploadFile, File, Form, Path
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
@@ -106,3 +106,13 @@ def get_upload(filename: str):
     if not os.path.exists(path):
         raise HTTPException(status_code=404, detail='File not found')
     return FileResponse(path)
+
+@app.put('/jobs/{job_id}', response_model=schemas.JobOut)
+def update_job(job_id: int = Path(...), job: schemas.JobUpdate = None, current_user: models.User = Depends(auth.get_current_user), db: Session = Depends(get_db)):
+    db_job = crud.get_job(db, job_id)
+    if not db_job:
+        raise HTTPException(status_code=404, detail='Job not found')
+    if not current_user.is_hr or db_job.owner_id != current_user.id:
+        raise HTTPException(status_code=403, detail='Not authorized')
+    updated = crud.update_job(db, job_id, job)
+    return updated

@@ -50,3 +50,13 @@ def create_applicant(db: Session, job_id: int, applicant: schemas.ApplicantCreat
 
 def get_applicants_for_job(db: Session, job_id: int):
     return db.query(models.Applicant).filter(models.Applicant.job_id == job_id).all()
+
+def update_job(db: Session, job_id: int, job_update: schemas.JobUpdate):
+    job = db.query(models.Job).filter(models.Job.id == job_id).first()
+    if not job:
+        return None
+    for field, value in job_update.dict(exclude_unset=True).items():
+        setattr(job, field, value)
+    db.commit()
+    db.refresh(job)
+    return job

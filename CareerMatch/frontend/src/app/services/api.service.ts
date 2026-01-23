@@ -7,7 +7,7 @@ import { Job, Applicant } from '../models';
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   api = environment.apiUrl;
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   private authHeaders() {
     const token = localStorage.getItem('token');
@@ -28,4 +28,7 @@ export class ApiService {
   getApplicants(jobId: number) { return this.http.get<Applicant[]>(`${this.api}/jobs/${jobId}/applicants`, this.authHeaders()); }
   login(username: string, password: string) { return this.http.post<any>(`${this.api}/auth/login`, { username, password }); }
   register(data: any) { return this.http.post<any>(`${this.api}/auth/register`, data); }
+  updateJob(id: number, data: any): Observable<Job> {
+    return this.http.put<Job>(`${this.api}/jobs/${id}`, data, this.authHeaders());
+  }
 }

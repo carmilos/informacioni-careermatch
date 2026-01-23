@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
+import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   user: any = null;
-  constructor(private api: ApiService) {
+  constructor(private api: ApiService, private router: Router) {
     const token = localStorage.getItem('token');
     if (token) this.fetchMe();
   }
@@ -27,6 +28,7 @@ export class AuthService {
   logout() {
     localStorage.removeItem('token');
     this.user = null;
+    this.router.navigate(['/']);
   }
 
   isHR() { return !!(this.user && this.user.is_hr); }

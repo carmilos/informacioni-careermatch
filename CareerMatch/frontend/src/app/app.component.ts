@@ -6,7 +6,7 @@ import { AuthService } from './services/auth.service';
   template: `
   <div class="app-container">
     <header class="header">
-      <div class="brand">
+      <div class="brand" style="cursor:pointer" [routerLink]="['/']">
         <div class="logo">CM</div>
         <div>
           <div class="title">CareerMatch</div>
@@ -16,7 +16,7 @@ import { AuthService } from './services/auth.service';
       <div class="nav-right">
         <div *ngIf="!auth.user" class="muted">Guest</div>
         <div *ngIf="auth.user" class="muted">{{auth.user.email}}</div>
-        <button *ngIf="auth.user" class="button ghost" (click)="auth.logout()">Logout</button>
+        <button *ngIf="auth.user" class="modal-file-btn logout-small" (click)="auth.logout()">Logout</button>
       </div>
     </header>
 

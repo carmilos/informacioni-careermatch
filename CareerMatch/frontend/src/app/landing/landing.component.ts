@@ -10,6 +10,8 @@ import { Job } from '../models';
 export class LandingComponent {
   jobs: Job[] = [];
   showCreate = false;
+  showEdit = false;
+  editJob: any = null;
   newJob = { title: '', company: '', location: '', description: '' };
   // auth fields
   loginEmail = '';
@@ -21,7 +23,29 @@ export class LandingComponent {
 
   load() { this.api.listJobs().subscribe(j => this.jobs = j); }
 
-  toggleCreate() { this.showCreate = !this.showCreate; }
+  toggleCreate() {
+    if (!this.showCreate) {
+      this.newJob = { title: '', company: '', location: '', description: '' };
+    }
+    this.showCreate = !this.showCreate;
+  }
+
+  openEdit(job: any) {
+    this.editJob = { ...job };
+    this.showEdit = true;
+  }
+
+  closeEdit() {
+    this.editJob = null;
+    this.showEdit = false;
+  }
+
+  updateJob() {
+    this.api.updateJob(this.editJob.id, this.editJob).subscribe(() => {
+      this.closeEdit();
+      this.load();
+    });
+  }
 
   create() {
     this.api.createJob(this.newJob).subscribe(() => { this.newJob = { title: '', company: '', location: '', description: '' }; this.showCreate = false; this.load(); });

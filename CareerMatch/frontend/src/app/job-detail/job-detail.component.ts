@@ -13,6 +13,7 @@ export class JobDetailComponent {
   name = '';
   email = '';
   cv: File | null = null;
+  showApply = false;
 
   constructor(private route: ActivatedRoute, private api: ApiService, public auth: AuthService) {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -33,4 +34,24 @@ export class JobDetailComponent {
     fd.append('cv', this.cv, this.cv.name);
     this.api.apply(this.job.id, fd).subscribe(() => alert('Application sent'));
   }
+  
+    resetApplyForm() {
+      this.name = '';
+      this.email = '';
+      this.cv = null;
+    }
+  
+    removeFile() {
+      this.cv = null;
+    }
+  
+    openApply() {
+      this.resetApplyForm();
+      this.showApply = true;
+    }
+  
+    closeApply() {
+      this.resetApplyForm();
+      this.showApply = false;
+    }
 }

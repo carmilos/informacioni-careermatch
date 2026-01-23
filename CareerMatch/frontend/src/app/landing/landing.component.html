@@ -1,40 +1,70 @@
-<div class="card">
-  <h1>CareerMatch — Job Openings</h1>
-  <div class="muted">Log in as HR to post; guests may apply</div>
-  <div style="margin-top:12px" class="actions">
-    <div *ngIf="!auth.user" style="flex:1;display:flex;gap:8px;">
-      <input placeholder="Email" [(ngModel)]="loginEmail" />
-      <input placeholder="Password" type="password" [(ngModel)]="loginPassword" />
-      <button class="button" (click)="doLogin()">Login</button>
+<div class="start-card add-job-card-btn" *ngIf="auth.user && auth.isHR()">
+  <button class="add-job-btn-full" (click)="toggleCreate()">Add job posting</button>
+</div>
+<div class="card start-card login-register-card" *ngIf="!auth.user">
+  <h2 class="login-heading">Are you hiring?</h2>
+  <div class="login-register-flex">
+    <div class="login-col">
+      <div class="login-title">You have an account</div>
+      <input class="modal-input" placeholder="Email" [(ngModel)]="loginEmail" name="loginEmail" />
+      <input class="modal-input" placeholder="Password" type="password" [(ngModel)]="loginPassword" name="loginPassword" />
+      <button class="button modal-post-btn" (click)="doLogin()">Login</button>
     </div>
-
-    <div *ngIf="!auth.user" style="display:flex;gap:8px;">
-      <input placeholder="Register email" [(ngModel)]="registerEmail" />
-      <input placeholder="Password" type="password" [(ngModel)]="registerPassword" />
-      <button class="button" (click)="doRegister()">Register HR</button>
-    </div>
-
-    <div *ngIf="auth.user" style="display:flex;gap:8px;align-items:center">
-      <button class="button" *ngIf="auth.isHR()" (click)="toggleCreate()">Create Job</button>
-      <button class="button ghost" (click)="auth.logout(); load();">Logout</button>
+    <div class="register-col">
+      <div class="login-title">Create an account</div>
+      <input class="modal-input" placeholder="Email" [(ngModel)]="registerEmail" name="registerEmail" />
+      <input class="modal-input" placeholder="Password" type="password" [(ngModel)]="registerPassword" name="registerPassword" />
+      <button class="button modal-post-btn" (click)="doRegister()">Register</button>
     </div>
   </div>
 </div>
 
-<div *ngIf="showCreate" class="card">
-  <h3>Create Job</h3>
-  <div style="display:grid;gap:8px">
-    <input placeholder="Title" [(ngModel)]="newJob.title" />
-    <input placeholder="Company" [(ngModel)]="newJob.company" />
-    <input placeholder="Location" [(ngModel)]="newJob.location" />
-    <textarea placeholder="Description" [(ngModel)]="newJob.description"></textarea>
-    <div><button class="button" (click)="create()">Post</button></div>
+<div *ngIf="showCreate" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title">Create Job</h3>
+      <button class="modal-close" (click)="showCreate = false">×</button>
+    </div>
+    <form class="modal-form">
+      <input class="modal-input" placeholder="Title" [(ngModel)]="newJob.title" />
+      <input class="modal-input" placeholder="Company" [(ngModel)]="newJob.company" />
+      <input class="modal-input" placeholder="Location" [(ngModel)]="newJob.location" />
+      <textarea class="modal-input" placeholder="Description" [(ngModel)]="newJob.description"></textarea>
+      <button class="button modal-post-btn" (click)="create()">Post</button>
+    </form>
   </div>
 </div>
 
-<div class="jobs-list">
-  <div *ngFor="let job of jobs" class="card">
-    <h3><a [routerLink]="['/jobs', job.id]">{{job.title}}</a></h3>
-    <div class="job-meta">{{job.company}} — {{job.location}} • Posted by #{{job.owner_id}}</div>
+<div class="jobs-list wide">
+  <div *ngFor="let job of jobs" class="job-card wide">
+    <div class="job-header" style="position:relative;">
+      <a [routerLink]="['/jobs', job.id]" class="job-title-link">{{job.title}}</a>
+      <button *ngIf="auth.isHR()" class="edit-job-btn" (click)="openEdit(job)" title="Edit job" style="position:absolute; top:8px; right:8px; padding:2px 6px;">
+        <span class="edit-icon small">✏️</span>
+      </button>
+    </div>
+  <!-- Modal za edit, van petlje -->
+
+<!-- Modal za edit posao, izvan petlje -->
+<div *ngIf="showEdit" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title">Edit Job</h3>
+      <button class="modal-close" (click)="closeEdit()">×</button>
+    </div>
+    <form class="modal-form">
+      <label class="modal-label">Title</label>
+      <input class="modal-input" [(ngModel)]="editJob.title" name="editTitle"/>
+      <label class="modal-label">Company</label>
+      <input class="modal-input" [(ngModel)]="editJob.company" name="editCompany"/>
+      <label class="modal-label">Location</label>
+      <input class="modal-input" [(ngModel)]="editJob.location" name="editLocation"/>
+      <label class="modal-label">Description</label>
+      <textarea class="modal-input" [(ngModel)]="editJob.description" name="editDescription"></textarea>
+      <button class="button modal-post-btn" type="button" (click)="updateJob()">Save changes</button>
+    </form>
+  </div>
+</div>
+    <div class="job-card-meta job-card-meta-indent">{{job.company}} — {{job.location}}</div>
   </div>
 </div>

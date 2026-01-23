@@ -50,3 +50,9 @@ class ApplicantOut(BaseModel):
     applied_at: datetime
     class Config:
         orm_mode = True
+
+class JobUpdate(BaseModel):
+    title: Optional[str] = None
+    company: Optional[str] = None
+    location: Optional[str] = None
+    description: Optional[str] = None

@@ -4,20 +4,36 @@
       <h2 style="margin:0">{{job.title}}</h2>
       <div class="job-meta">{{job.company}} — {{job.location}}</div>
     </div>
-    <div *ngIf="canSeeApplicants()" class="actions">
-      <button class="button ghost" [routerLink]="['/jobs', job.id, 'applicants']">View applicants</button>
-    </div>
+    <!-- Uklonjen desni ugao dugme za HR -->
   </div>
 
-  <p style="margin-top:12px">{{job.description}}</p>
+  <p class="job-description">{{job.description}}</p>
 
-  <div style="margin-top:18px">
-    <h3>Apply</h3>
-    <div style="display:grid;gap:8px;margin-top:8px;">
-      <input placeholder="Your name" [(ngModel)]="name" />
-      <input placeholder="Your email" [(ngModel)]="email" />
-      <input type="file" (change)="onFile($event)" />
-      <div class="actions"><button class="button" (click)="apply()">Send application</button></div>
+  <div style="margin-top:18px; text-align:center;">
+    <button *ngIf="canSeeApplicants()" class="modal-file-btn" [routerLink]="['/jobs', job.id, 'applicants']">View applicants</button>
+    <button *ngIf="!canSeeApplicants()" class="button modal-post-btn" (click)="openApply()">Apply</button>
+  </div>
+
+  <div *ngIf="showApply" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Apply for Job</h3>
+        <button class="modal-close" (click)="closeApply()">×</button>
+      </div>
+      <form class="modal-form">
+        <input class="modal-input" placeholder="Your name" [(ngModel)]="name" name="name" />
+        <input class="modal-input" placeholder="Your email" [(ngModel)]="email" name="email" />
+        <div class="modal-file-row">
+          <label for="apply-file" class="modal-file-btn">
+            <span *ngIf="!cv">Choose file</span>
+            <span *ngIf="cv">{{cv.name}}</span>
+          </label>
+          <input id="apply-file" type="file" (change)="onFile($event)" style="display:none;" />
+          <span *ngIf="cv" class="file-icon-attach" title="File attached">📎</span>
+          <button *ngIf="cv" type="button" class="file-remove-btn" (click)="removeFile()" title="Remove file">✖</button>
+        </div>
+        <button class="button modal-post-btn" type="button" (click)="apply(); closeApply();">Send application</button>
+      </form>
     </div>
   </div>
 </div>
