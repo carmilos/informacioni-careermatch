@@ -75,18 +75,28 @@ def apply_job(
     job_id: int,
     name: str = Form(...),
     email: str = Form(...),
-    cv: UploadFile = File(...),
+    cv: UploadFile = File(None),
+    cv_text: str = Form(None),
     db: Session = Depends(get_db),
 ):
     job = crud.get_job(db, job_id)
     if not job:
         raise HTTPException(status_code=404, detail='Job not found')
-    filename = f"{job_id}_{int(__import__('time').time())}_{cv.filename}"
-    dest = os.path.join(UPLOAD_DIR, filename)
-    with open(dest, 'wb') as f:
-        f.write(cv.file.read())
+    filename = None
+    if cv is not None:
+        filename = f"{job_id}_{int(__import__('time').time())}_{cv.filename}"
+        dest = os.path.join(UPLOAD_DIR, filename)
+        with open(dest, 'wb') as f:
+            f.write(cv.file.read())
+    elif cv_text and cv_text.strip():
+        filename = f"{job_id}_{int(__import__('time').time())}_cv_text.txt"
+        dest = os.path.join(UPLOAD_DIR, filename)
+        with open(dest, 'w', encoding='utf-8') as f:
+            f.write(cv_text)
+    else:
+        raise HTTPException(status_code=400, detail='CV file or text required')
     applicant = schemas.ApplicantCreate(name=name, email=email)
-    created = crud.create_applicant(db, job_id, applicant, cv_path=dest)
+    created = crud.create_applicant(db, job_id, applicant, cv_path=filename)
     return created
 
 
@@ -97,7 +107,48 @@ def get_applicants(job_id: int, current_user: models.User = Depends(auth.get_cur
         raise HTTPException(status_code=404, detail='Job not found')
     if job.owner_id != current_user.id:
         raise HTTPException(status_code=403, detail='Only poster can view applicants')
-    return crud.get_applicants_for_job(db, job_id)
+    applicants = crud.get_applicants_for_job(db, job_id)
+    # Učitaj tekstove CV-jeva
+    cvs = []
+    for a in applicants:
+        cv_text = ''
+        if a.cv_path:
+            file_path = os.path.join(UPLOAD_DIR, a.cv_path)
+            if os.path.exists(file_path):
+                try:
+                    with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                        cv_text = f.read()
+                except Exception:
+                    cv_text = ''
+        cvs.append({'name': a.name, 'email': a.email, 'text': cv_text})
+    # Provera da li ima bar jedan validan CV tekst
+    has_valid_cv = any(cv['text'].strip() for cv in cvs)
+    result = []
+    if has_valid_cv:
+        from .ai_cv_analyzer_sr import CVAnalyzer, srpski_stop_reci
+        analyzer = CVAnalyzer(stop_words=srpski_stop_reci)
+        ranked = analyzer.rank_applicants(job.description or '', cvs)
+        for a in applicants:
+            score = next((r['similarity'] for r in ranked if r['email'] == a.email), None)
+            result.append({
+                'id': a.id,
+                'name': a.name,
+                'email': a.email,
+                'cv_path': a.cv_path,
+                'applied_at': a.applied_at,
+                'score': score
+            })
+    else:
+        for a in applicants:
+            result.append({
+                'id': a.id,
+                'name': a.name,
+                'email': a.email,
+                'cv_path': a.cv_path,
+                'applied_at': a.applied_at,
+                'score': None
+            })
+    return result
 
 
 @app.get('/uploads/{filename}')

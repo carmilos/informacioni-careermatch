@@ -1,3 +1,19 @@
+.show-cv-btn {
+	background: #fbbf24;
+	color: #23272f;
+	border: 1.5px solid #f59e0b;
+	border-radius: 8px;
+	font-size: 1.01rem;
+	font-weight: 600;
+	padding: 8px 14px;
+	cursor: pointer;
+	margin-right: 2px;
+	transition: background 0.18s, color 0.18s;
+}
+.show-cv-btn:hover {
+	background: #f59e0b;
+	color: #fff;
+}
 .logout-small {
 	font-size: 0.7em !important;
 	padding: 4px 10px !important;

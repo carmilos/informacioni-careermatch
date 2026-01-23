@@ -13,6 +13,7 @@ export class JobDetailComponent {
   name = '';
   email = '';
   cv: File | null = null;
+  cvText: string = '';
   showApply = false;
 
   constructor(private route: ActivatedRoute, private api: ApiService, public auth: AuthService) {
@@ -27,11 +28,12 @@ export class JobDetailComponent {
   }
 
   apply() {
-    if (!this.job || !this.cv) return alert('Provide name, email and CV');
+    if (!this.job || (!this.cv && !this.cvText.trim())) return alert('Provide name, email and CV (file or text)');
     const fd = new FormData();
     fd.append('name', this.name);
     fd.append('email', this.email);
-    fd.append('cv', this.cv, this.cv.name);
+    if (this.cv) fd.append('cv', this.cv, this.cv.name);
+    if (this.cvText && this.cvText.trim().length > 0) fd.append('cv_text', this.cvText);
     this.api.apply(this.job.id, fd).subscribe(() => alert('Application sent'));
   }
   
@@ -39,6 +41,7 @@ export class JobDetailComponent {
       this.name = '';
       this.email = '';
       this.cv = null;
+      this.cvText = '';
     }
   
     removeFile() {

@@ -32,6 +32,10 @@
           <span *ngIf="cv" class="file-icon-attach" title="File attached">📎</span>
           <button *ngIf="cv" type="button" class="file-remove-btn" (click)="removeFile()" title="Remove file">✖</button>
         </div>
+        <div style="margin-top:10px;">
+          <textarea class="modal-input" placeholder="Or paste your CV here as text" [(ngModel)]="cvText" name="cvText"></textarea>
+          <div class="muted" style="font-size:0.9em;">Možete priložiti fajl ili uneti tekstualni CV (ili oba).</div>
+        </div>
         <button class="button modal-post-btn" type="button" (click)="apply(); closeApply();">Send application</button>
       </form>
     </div>

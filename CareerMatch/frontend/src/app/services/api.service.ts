@@ -17,6 +17,12 @@ export class ApiService {
   // Generic GET helper. `path` may be absolute or relative to API base.
   get<T = any>(path: string, includeAuth = true) {
     const url = path.startsWith('http') ? path : `${this.api}${path.startsWith('/') ? path : '/' + path}`;
+    // Ako je GET za /uploads, koristi responseType: 'text'
+    if (url.includes('/uploads/')) {
+      const opts: any = includeAuth ? this.authHeaders() : {};
+      opts.responseType = 'text';
+      return this.http.get(url, opts);
+    }
     const opts = includeAuth ? this.authHeaders() : {};
     return this.http.get<T>(url, opts);
   }

@@ -48,6 +48,7 @@ class ApplicantOut(BaseModel):
     email: EmailStr
     cv_path: str
     applied_at: datetime
+    score: float = 0.0
     class Config:
         orm_mode = True
 

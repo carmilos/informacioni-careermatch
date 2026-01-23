@@ -1,0 +1,27 @@
+.show-cv-btn, .modal-file-btn {
+  font-size: 16px;
+  font-weight: 600;
+  padding: 6px 18px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.show-cv-btn {
+  background: #fde047;
+  color: #333;
+  border: 1px solid #fde047;
+}
+.show-cv-btn:hover {
+  background: #fff9c4;
+}
+.modal-file-btn {
+  background: #e5e7eb;
+  color: #333;
+  border: 1px solid #e5e7eb;
+  text-decoration: none;
+  display: inline-block;
+}
+.modal-file-btn:hover {
+  background: #f3f4f6;
+}
